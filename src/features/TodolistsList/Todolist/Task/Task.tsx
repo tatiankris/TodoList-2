@@ -4,6 +4,9 @@ import { Delete } from '@mui/icons-material';
 import IconButton from '@mui/material/IconButton';
 import Checkbox from '@mui/material/Checkbox';
 import { TaskStatuses, TaskType } from '../../../../api/todolists-api'
+import {useSelector} from "react-redux";
+import {AppRootStateType} from "../../../../app/store";
+import {RequestStatusType} from "../../../../app/app-reducer";
 
 type TaskPropsType = {
     task: TaskType
@@ -13,6 +16,10 @@ type TaskPropsType = {
     removeTask: (taskId: string, todolistId: string) => void
 }
 export const Task = React.memo((props: TaskPropsType) => {
+
+
+    const todolistStatus = useSelector<AppRootStateType, RequestStatusType>(state => state.todolists.filter(tl => tl.id === props.todolistId)[0].entityStatus);
+
     const onClickHandler = useCallback(() => props.removeTask(props.task.id, props.todolistId), [props.task.id, props.todolistId]);
 
     const onChangeHandler = useCallback((e: ChangeEvent<HTMLInputElement>) => {
@@ -31,8 +38,8 @@ export const Task = React.memo((props: TaskPropsType) => {
             onChange={onChangeHandler}
         />
 
-        <EditableSpan value={props.task.title} onChange={onTitleChangeHandler}/>
-        <IconButton onClick={onClickHandler}>
+        <EditableSpan value={props.task.title} onChange={onTitleChangeHandler} disabled={todolistStatus === 'loading'}/>
+        <IconButton onClick={onClickHandler} disabled={todolistStatus === 'loading'}>
             <Delete/>
         </IconButton>
     </div>

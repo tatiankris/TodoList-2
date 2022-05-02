@@ -2,7 +2,7 @@
 // @ts-ignore
 import {v1} from "uuid";
 import {
-    addTodolistAC, changeTodolistFilterAC, changeTodolistTitleAC,
+    addTodolistAC, changeTodolistEntityStatusAC, changeTodolistFilterAC, changeTodolistTitleAC,
     removeTodolistAC,
     setTodolistsAC,
     TodolistDomainType,
@@ -13,8 +13,8 @@ const todolistID1 = v1();
 const todolistID2 = v1();
 
 let state: Array<TodolistDomainType> = [
-    {id:todolistID1, title:'What to learn', filter: 'all', order: 0, addedDate: ""},
-    {id:todolistID2, title:'What to buy', filter: 'all', order: 0, addedDate: ""},
+    {id:todolistID1, title:'What to learn', filter: 'all', order: 0, addedDate: "", entityStatus: 'idle'},
+    {id:todolistID2, title:'What to buy', filter: 'all', order: 0, addedDate: "", entityStatus: 'idle'},
 ]
 test ('todolists should be set to the state', () => {
 
@@ -66,6 +66,15 @@ test ('todolist filter should be changed', () => {
     const endState = todolistsReducer(state, action)
 
     expect(endState.length).toBe(2);
-    expect(endState[0].id).toBe(todolistID1);
+
     expect(endState[0].filter).toBe('active');
+})
+
+//'CHANGE-TODOLIST-ENTITY-STATUS
+test ('todolist entity status should be changed', () => {
+
+    const endState = todolistsReducer(state, changeTodolistEntityStatusAC(todolistID1,'loading'))
+
+    expect(endState[0].entityStatus).toBe('loading');
+    expect(endState[1].entityStatus).toBe('idle');
 })
