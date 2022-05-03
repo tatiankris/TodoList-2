@@ -125,4 +125,4 @@ export type AddTodolistActionType = ReturnType<typeof addTodolistAC>
 export type RemoveTodolistActionType = ReturnType<typeof removeTodolistAC>
 export type SetTodolistsActionType = ReturnType<typeof setTodolistsAC>
 
-export type ThunkDispatch = ActionsType | SetAppStatusActionType | SetAppErrorActionType;
+type ThunkDispatch = ActionsType | SetAppStatusActionType | SetAppErrorActionType;

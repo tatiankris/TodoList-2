@@ -16,13 +16,7 @@ import {
 } from "../../app/app-reducer";
 import {handleServerAppError, handleServerNetworkError} from "../../utils/error-utils";
 
-export type TasksStateType = {
-    [key: string]: Array<TaskType>
-}
 
-export type TasksStateDomainType = TasksStateType & {
-    entityStatus: RequestStatusType
-}
 
 const initialState: TasksStateType = {}
 
@@ -190,4 +184,12 @@ type ActionsType = ReturnType<typeof removeTaskAC>
     | SetTodolistsActionType
     | ReturnType<typeof setTasksAC>
 
-export type ThunkDispatch = ActionsType | SetAppErrorActionType | SetAppStatusActionType | changeTodolistEntityStatusType
+type ThunkDispatch = ActionsType | SetAppErrorActionType | SetAppStatusActionType | changeTodolistEntityStatusType
+
+export type TasksStateType = {
+    [key: string]: Array<TaskType>
+}
+
+export type TasksStateDomainType = TasksStateType & {
+    entityStatus: RequestStatusType
+}

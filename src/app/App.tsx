@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useCallback, useEffect} from 'react'
 import './App.css';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
@@ -7,13 +7,18 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import {Menu} from '@mui/icons-material';
-import {TaskType} from '../api/todolists-api'
 import {TodolistsList} from "../features/TodolistsList/TodolistsList";
-import {LinearProgress} from "@mui/material";
+import {CircularProgress, LinearProgress} from "@mui/material";
 import {ErrorSnackbar} from "../components/ErrorSnackbar/ErrorSnackbar";
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {AppRootStateType} from "./store";
-import {RequestStatusType} from "./app-reducer";
+import {initializeAppTC, RequestStatusType} from "./app-reducer";
+import {Login} from "../features/Login/Login";
+import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {logoutTC} from "../features/Login/auth-reducer";
+import {removeTaskTC} from "../features/TodolistsList/tasks-reducer";
+
+
 
 
 
@@ -24,10 +29,28 @@ type PropsType = {
 
 function App ({demo = false}: PropsType) {
 
+    const dispatch = useDispatch();
+    const status = useSelector<AppRootStateType, RequestStatusType >((state) => state.app.status)
+    const isLoggedIn = useSelector<AppRootStateType>((state) => state.auth.isLoggedIn)
+    const isInitialized = useSelector<AppRootStateType>((state) => state.app.isInitialized)
 
-    const status = useSelector<AppRootStateType, RequestStatusType>((state) => state.app.status)
+    useEffect(() => {
+        dispatch(initializeAppTC());
+    }, [])
+
+    const logoutHandler = useCallback( () => {
+        dispatch(logoutTC())
+    }, []);
+
+
+    if (!isInitialized) {
+        return <div style={{position:'fixed', top: '30%', textAlign: 'center', width:'100%' }}>
+            <CircularProgress/>
+        </div>
+    }
 
     return (
+        <BrowserRouter>
         <div className="App">
             <AppBar position="static">
                 <ErrorSnackbar />
@@ -38,14 +61,20 @@ function App ({demo = false}: PropsType) {
                     <Typography variant="h6">
                         News
                     </Typography>
-                    <Button color="inherit">Login</Button>
+                    {isLoggedIn && <Button color="inherit" onClick={logoutHandler}>Log out</Button>}
                 </Toolbar>
                 {status === "loading" && <LinearProgress />}
             </AppBar>
             <Container fixed>
-                <TodolistsList />
+                <Routes>
+                        <Route path="/" element={<TodolistsList/>}/>
+                        <Route path="/login" element={<Login/>}/>
+                        {/*<Route path="*" element={<Navigate to={"/404"}/>}/>*/}
+                        <Route path="/404" element={<h1>404. PAGE NOT FOUND</h1>}/>
+                </Routes>
             </Container>
         </div>
+</BrowserRouter>
     );
 }
 
