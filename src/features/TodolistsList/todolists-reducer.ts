@@ -35,6 +35,9 @@ export const todolistsReducer = (state: Array<TodolistDomainType> = initialState
         case 'SET-TODOLISTS': {
             return action.todolists.map(tl => ({...tl, filter:<FilterValuesType> 'all', entityStatus: 'idle'}));
         }
+        case 'CLEAR-DATA': {
+            return [];
+        }
         default:
             return state;
     }
@@ -50,6 +53,7 @@ export const changeTodolistFilterAC = (id: string, filter: FilterValuesType) => 
 export const changeTodolistEntityStatusAC = (id: string, status: RequestStatusType) => ({
     type: 'CHANGE-TODOLIST-ENTITY-STATUS', id: id, status} as const)
 export const setTodolistsAC = (todolists: Array<TodolistType>) => ({type: "SET-TODOLISTS", todolists} as const)
+export const clearDataAC = () => ({type: "CLEAR-DATA"} as const)
 
 //thunks
 export const fetchTodoListsTC = () => (dispatch: any) => {
@@ -127,9 +131,11 @@ type ActionsType = RemoveTodolistActionType
     | ReturnType<typeof changeTodolistFilterAC>
     | SetTodolistsActionType
     | changeTodolistEntityStatusType
+    | ClearDataActionType
 export type changeTodolistEntityStatusType = ReturnType<typeof changeTodolistEntityStatusAC>
 export type AddTodolistActionType = ReturnType<typeof addTodolistAC>
 export type RemoveTodolistActionType = ReturnType<typeof removeTodolistAC>
 export type SetTodolistsActionType = ReturnType<typeof setTodolistsAC>
+export type ClearDataActionType = ReturnType<typeof clearDataAC>
 
 type ThunkDispatch = ActionsType | SetAppStatusActionType | SetAppErrorActionType;

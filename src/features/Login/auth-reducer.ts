@@ -2,7 +2,7 @@ import {authAPI, LoginParamsType} from "../../api/todolists-api";
 import {Dispatch} from "redux";
 import {SetAppErrorActionType, setAppStatusAC, SetAppStatusActionType} from "../../app/app-reducer";
 import {handleServerAppError, handleServerNetworkError} from "../../utils/error-utils";
-import {changeTodolistEntityStatusType} from "../TodolistsList/todolists-reducer";
+import {changeTodolistEntityStatusType, clearDataAC, ClearDataActionType} from "../TodolistsList/todolists-reducer";
 
 
 const initialState: AuthReducerStateType = {
@@ -52,6 +52,7 @@ export const logoutTC = () => (dispatch: Dispatch<ThunkDispatch>) => {
             if (res.data.resultCode === 0) {
                 dispatch(setIsLoggedInAC(false))
                 dispatch(setAppStatusAC('succeeded'));
+                dispatch(clearDataAC());
             }
             else handleServerAppError(res.data, dispatch);
         })
@@ -67,4 +68,4 @@ export const logoutTC = () => (dispatch: Dispatch<ThunkDispatch>) => {
 //types
 type ThunkDispatch = ActionsType | SetAppErrorActionType | SetAppStatusActionType | changeTodolistEntityStatusType
 export type SetIsLoggedInType = ReturnType<typeof setIsLoggedInAC>
-type ActionsType = SetIsLoggedInType
+type ActionsType = SetIsLoggedInType | ClearDataActionType
