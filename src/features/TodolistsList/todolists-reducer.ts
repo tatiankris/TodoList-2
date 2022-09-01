@@ -8,6 +8,7 @@ import {
     SetAppStatusActionType
 } from "../../app/app-reducer";
 import {handleServerAppError, handleServerNetworkError} from "../../utils/error-utils";
+import {fetchTasksTC} from "./tasks-reducer";
 
 const initialState: Array<TodolistDomainType> = [
     /*{id: todolistId1, title: 'What to learn', filter: 'all', addedDate: '', order: 0},
@@ -51,12 +52,18 @@ export const changeTodolistEntityStatusAC = (id: string, status: RequestStatusTy
 export const setTodolistsAC = (todolists: Array<TodolistType>) => ({type: "SET-TODOLISTS", todolists} as const)
 
 //thunks
-export const fetchTodoListsTC = () => (dispatch: Dispatch<ThunkDispatch>) => {
+export const fetchTodoListsTC = () => (dispatch: any) => {
     dispatch(setAppStatusAC('loading'))
         todolistsAPI.getTodolists()
             .then((res) => {
                 dispatch(setTodolistsAC(res.data));
                 dispatch(setAppStatusAC('succeeded'));
+                return res.data;
+            })
+            .then((todos)=> {
+                todos.forEach(tl => {
+                    dispatch(fetchTasksTC(tl.id));
+                })
             })
 }
 export const addTodoListTC = (title: string) => (dispatch: Dispatch<ThunkDispatch>) => {

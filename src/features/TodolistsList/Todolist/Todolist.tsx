@@ -27,12 +27,13 @@ export const Todolist = React.memo(function ({demo = false, ...props}: PropsType
     console.log('Todolist called')
     const dispatch = useDispatch();
 
-    useEffect (() => {
-        // if (demo) {
-        //     return
-        // }
-        dispatch(fetchTasksTC(props.todolist.id));
-    }, [])
+    ///ВМЕСТО ТДИСПАТЧА ТАСОК ЗДЕСЬ, СДЕЛАЛИ ЭТО В TODOLISTS-REDUCER ПОСЛЕ FETCH-TODOLISTS
+    // useEffect (() => {
+    //     // if (demo) {
+    //     //     return
+    //     // }
+    //     dispatch(fetchTasksTC(props.todolist.id));
+    // }, [])
 
     const addTask = useCallback((title: string) => {
         props.addTask(title, props.todolist.id)
