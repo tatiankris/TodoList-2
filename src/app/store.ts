@@ -1,23 +1,33 @@
-import { tasksReducer } from '../features/TodolistsList/tasks-reducer';
-import { todolistsReducer } from '../features/TodolistsList/todolists-reducer';
+import {tasksSlice} from '../features/TodolistsList/tasks-reducer';
+import {todolistsSlice} from '../features/TodolistsList/todolists-reducer';
 import {applyMiddleware, combineReducers, createStore} from 'redux';
 import thunk from "redux-thunk";
-import {appReducer} from "./app-reducer";
-import {authReducer} from "../features/Login/auth-reducer";
+import {appSlice} from "./app-reducer";
+import {authSlice} from "../features/Login/auth-reducer";
+import {configureStore} from "@reduxjs/toolkit";
+import {useDispatch} from "react-redux";
 
-// объединяя reducer-ы с помощью combineReducers,
-// мы задаём структуру нашего единственного объекта-состояния
+
 const rootReducer = combineReducers({
-    tasks: tasksReducer,
-    todolists: todolistsReducer,
-    app: appReducer,
-    auth: authReducer,
+    tasks: tasksSlice.reducer,
+    todolists: todolistsSlice.reducer,
+    app: appSlice.reducer,
+    auth: authSlice.reducer,
 })
-// непосредственно создаём store
-export const store = createStore(rootReducer, applyMiddleware(thunk));
-// определить автоматически тип всего объекта состояния
+
+
+export const store = configureStore({
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(thunk)
+})
+
+
+
 export type AppRootStateType = ReturnType<typeof rootReducer>
 
-// а это, чтобы можно было в консоли браузера обращаться к store в любой момент
+export type AppDispatchType = typeof store.dispatch
+export const useAppDispatch: () => AppDispatchType = useDispatch
+
 // @ts-ignore
+
 window.store = store;
