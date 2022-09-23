@@ -1,18 +1,21 @@
-import {appReducer, AppReducerStateType, setAppErrorAC, setAppStatusAC} from "./app-reducer";
+import {AppReducerStateType, appSlice, setAppErrorAC, setAppStatusAC} from "./app-reducer";
 
 let appTestState: AppReducerStateType;
 
 beforeEach(() => {
     appTestState = {
         status: 'idle',
-        error: null
+        error: null,
+        isInitialized: true
     }
 })
 
+const appReducer = appSlice.reducer
+
 test ('correct error message should be set', () => {
 
-   const errorStringState = appReducer(appTestState, setAppErrorAC('some error'))
-    const errorNullState = appReducer(errorStringState, setAppErrorAC(null))
+   const errorStringState = appReducer(appTestState, setAppErrorAC({error: 'some error'}))
+    const errorNullState = appReducer(errorStringState, setAppErrorAC({error: null}))
 
     expect(errorStringState.error).toBe('some error');
     expect(errorNullState.error).toBe(null);
@@ -20,10 +23,10 @@ test ('correct error message should be set', () => {
 
 test ('correct status should be set', () => {
 
-    const idleStatusState = appReducer(appTestState, setAppStatusAC('idle'))
-    const loadingStatusState = appReducer(appTestState, setAppStatusAC('loading'))
-    const succeededStatusState = appReducer(appTestState, setAppStatusAC('succeeded'))
-    const failedStatusState = appReducer(appTestState, setAppStatusAC('failed'))
+    const idleStatusState = appReducer(appTestState, setAppStatusAC({status: 'idle'}))
+    const loadingStatusState = appReducer(appTestState, setAppStatusAC({status: 'loading'}))
+    const succeededStatusState = appReducer(appTestState, setAppStatusAC({status: 'succeeded'}))
+    const failedStatusState = appReducer(appTestState, setAppStatusAC({status: 'failed'}))
 
     expect(idleStatusState.status).toBe('idle');
     expect(loadingStatusState.status).toBe('loading');

@@ -50,7 +50,6 @@ function App ({demo = false}: PropsType) {
     }
 
     return (
-        <BrowserRouter>
         <div className="App">
             <AppBar position="static">
                 <ErrorSnackbar />
@@ -71,7 +70,6 @@ function App ({demo = false}: PropsType) {
                 </Routes>
             </Container>
         </div>
-</BrowserRouter>
     );
 }
 
