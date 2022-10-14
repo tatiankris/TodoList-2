@@ -2,10 +2,10 @@ import React from 'react';
 import {Checkbox, FormControl, FormControlLabel, FormGroup, FormLabel, TextField} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import Button from "@mui/material/Button";
-import {FormikErrors, useFormik} from "formik";
+import {FormikErrors, FormikHelpers, useFormik} from "formik";
 import {useDispatch, useSelector} from "react-redux";
 import {loginTC} from "./auth-reducer";
-import {AppRootStateType} from "../../app/store";
+import {AppDispatchType, AppRootStateType, useAppDispatch} from "../../app/store";
 import {Navigate} from "react-router-dom";
 
 type FormikErrorType   = {
@@ -14,10 +14,15 @@ type FormikErrorType   = {
     rememberMe?: boolean
 }
 
+type FormValuesType = {
+    email: string
+    password: string
+    rememberMe: boolean
+}
 
 export const Login = () => {
 
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
 
     const formik = useFormik({
         initialValues: {
@@ -35,19 +40,28 @@ export const Login = () => {
                 errors.email = 'Invalid email address';
             }
 
-            if (!values.password) {
-                errors.password = "Password is required"
-            }
+                if (!values.password) {
+                    errors.password = "Password is required"
+                }
             else if (values.password.length < 2) {
                 errors.password = "Password must be more than 2 cymbols"
             }
             return errors
         },
 
-        onSubmit: values => {
+        onSubmit: async (values, formikHelpers) => {
             // alert(JSON.stringify(values.email));
             formik.resetForm();
-            dispatch(loginTC(values));
+            const action = await dispatch(loginTC(values));
+            if (loginTC.rejected.match(action)) {
+                if (action.payload?.fieldsErrors?.length) {
+                    formikHelpers.setFieldError(action.payload.fieldsErrors[0].field, action.payload.fieldsErrors[0].error);
+                    formikHelpers.setFieldTouched(action.payload.fieldsErrors[0].field)
+                }
+                else {
+                    new Error ('error: Some error')
+                }
+            }
         },
     });
     console.log(formik)

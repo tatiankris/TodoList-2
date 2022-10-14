@@ -66,7 +66,7 @@ export type     LoginParamsType = {
 export type ResponseType<D = {}> = {
     resultCode: number
     messages: Array<string>
-    fieldsErrors?: Array<string>
+    fieldsErrors?: Array<{ error: string, field: string }>
     data: D
 }
 export enum TaskStatuses {

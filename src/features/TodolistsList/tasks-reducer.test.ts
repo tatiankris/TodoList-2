@@ -1,8 +1,8 @@
-import {tasksSlice, TasksStateType} from "../TodolistsList/tasks-reducer";
+import {fetchTasksTC, tasksSlice, TasksStateType} from "../TodolistsList/tasks-reducer";
 import {TaskPriorities, TaskStatuses} from "../../api/todolists-api";
 import {addTodolistAC, removeTodolistAC, setTodolistsAC} from "./todolists-reducer";
 import { addTaskAC, changeTaskStatusAC, changeTaskTitleAC,
-    removeTaskAC, setTasksAC } from "./tasks-reducer";
+    removeTaskAC } from "./tasks-reducer";
 
 
 const state: TasksStateType = {
@@ -31,12 +31,12 @@ test ('tasks should be added when we set tasks', () => {
     const oldState = {
         "todolistId3": []
     }
-    const action = setTasksAC({tasks: [
+    const action = fetchTasksTC.fulfilled({tasks: [
         { id: "1", title: "one", status: TaskStatuses.New, todoListId: "todolistId3", description: '',
             startDate: '', deadline: '', addedDate: '', order: 0, priority: TaskPriorities.Low },
         { id: "2", title: "two", status: TaskStatuses.Completed, todoListId: "todolistId3", description: '',
             startDate: '', deadline: '', addedDate: '', order: 0, priority: TaskPriorities.Low }],
-        todolistId: "todolistId3"});
+        todolistId: "todolistId3"}, 'requestId', 'todolistId3');
 
     const newState = tasksReducer(oldState, action);
 

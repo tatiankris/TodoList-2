@@ -37,25 +37,23 @@ export const TodolistsList: React.FC<PropsType> = ({demo = false}) => {
     const tasks = useSelector<AppRootStateType, TasksStateType>(state => state.tasks)
     const dispatch = useDispatch();
 
-
-
     const removeTask = useCallback(function (id: string, todolistId: string) {
-        const thunk = removeTaskTC(id, todolistId);
+        const thunk = removeTaskTC({taskId: id, todolistId: todolistId});
         dispatch(thunk);
     }, []);
 
     const addTask = useCallback(function (title: string, todolistId: string) {
-        const thunk = addTaskTC(todolistId, title)
+        const thunk = addTaskTC({todolistId: todolistId, title: title})
         dispatch(thunk);
     }, []);
 
     const changeStatus = useCallback(function (id: string, status: TaskStatuses, todolistId: string) {
-        const thunk = updateTaskStatusTC(id, todolistId, status);
+        const thunk = updateTaskStatusTC({taskId: id, todolistId: todolistId, status: status});
         dispatch(thunk);
     }, []);
 
     const changeTaskTitle = useCallback(function (id: string, newTitle: string, todolistId: string) {
-        const thunk = updateTaskTitleTC(id, todolistId, newTitle);
+        const thunk = updateTaskTitleTC({taskId: id, todolistId: todolistId, title: newTitle});
         dispatch(thunk);
     }, []);
 
@@ -70,7 +68,7 @@ export const TodolistsList: React.FC<PropsType> = ({demo = false}) => {
     }, []);
 
     const changeTodolistTitle = useCallback(function (id: string, title: string) {
-        const thunk = changeTodolistTitleTC(id, title);
+        const thunk = changeTodolistTitleTC({todolistId: id, title: title});
         dispatch(thunk);
     }, []);
 
@@ -79,11 +77,9 @@ export const TodolistsList: React.FC<PropsType> = ({demo = false}) => {
         dispatch(thunk);
     }, [dispatch]);
 
-
     if (!isLoggedIn) {
         return <Navigate to={'/login'}/>
     }
-
 
     return <>
         <Grid container style={{padding: '20px'}}>
